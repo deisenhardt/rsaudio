@@ -1,0 +1,88 @@
+#! /bin/zsh
+
+# Optionally, #! /bin/bash if you prefer.  
+# Should be funcionally the same
+
+# (C) David Eisenhardt  GPL v2.0
+# https://github.com/deisenhardt/rsaudio/
+
+#{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}
+# functions  {}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}
+#{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}
+
+usage(){
+    printf "\n\tThe purpose of this script is to address power/sleep/suspend related audio issues in MacOS Monterey \
+            \n\n Usage: rsaudio [-c|a] \
+            \n\t -c: restart only Google Chrome \
+            \n\t -a: restart only coreaudiod \
+            \n No argument: restart coreaudiod \
+            \n then prompt to restart Google Chrome \
+            \n Please expect to be prompted for elevated permission \
+            \n HOWEVER please do not run the script as su/sudo/root as \
+            \n this will result in running apps & services with elevated priveleges \
+            \n\n\t ## This project is functional, but still WIP ## \n\n"
+}
+
+sudo_check() {
+  if [ "$(id -u)" -ne 0 ]; then
+    printf "\n\t$0 must be run as sudo\n\n"
+    usage && exit 3
+  else
+    sudook=1
+  fi
+}
+
+restart_audio(){
+    printf "Kill coreaudiod \n"
+    sudo killall coreaudiod
+    printf "done \n"
+}
+
+restart_chrome(){
+    printf "\nKill Google Chrome \n"
+    #sudo killall Google\ Chrome
+    sudo killall "Google Chrome"
+    sleep 2
+    printf "done \n"
+
+
+    # sudo is not needed to open Chrome, and we do not want to 
+    # be running Chrome with elevation so we will instead
+    # sudo the commands that need elevation only within the script
+
+    printf "\nRestart Google Chrome \n"
+    #open -a Google\ Chrome
+    open -a "Google Chrome"
+    printf "done \n"
+}
+
+no_flags(){
+    restart_audio
+    printf "Restart Google Chrome? "
+        read ChRestart
+        case $ChRestart in
+            [yY]*) restart_chrome ;;
+            *    ) exit 0 ;;
+        esac
+}
+
+
+###########################################################################
+# main ####################################################################
+###########################################################################
+
+#sudo_check
+
+if [ -z "$1" ]; then
+    no_flags
+    else 
+        case "$1" in
+            -a) restart_audio ; exit 0  ;;
+            -c) restart_chrome ; exit 0 ;;
+            -h) usage ; exit 0          ;;
+            * ) usage ; exit 1          ;;
+        esac
+fi
+
+printf "\n"
+exit 0
