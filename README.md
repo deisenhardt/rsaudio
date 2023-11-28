@@ -1,7 +1,7 @@
 # rsaudio
 This script is my way of addressing audio issues with MacOS &amp; Google Chrome which originated sometime around the release of Catalina and/or Monterrey.  I first began work on this in Monterrey but have tested it fixes the same root cause in a Catalina system, but I do not remember any similar issues prior to Catalina.  It also works with Ventura & Sonoma. These problems are rarer with Sonoma but not completely gone.
 
-Macs connected to a thunderbolt dock (only tested with TB3 and newer devices, theoretically it could also impact TB2) or with USB (whether 2.0/3.0/3.1/3/2gen2 with either USB-C or USB-A connection) dock, DAC, headset, or other audio device may suffer from suddenly having no audio.  This can be, but is not always related to sleep/suspend. 
+Macs connected to a thunderbolt dock (only tested with TB3 and newer devices, theoretically it could also impact TB2) or with USB (whether 2.0/3.0/3.1/3.2gen2 with either USB-C or USB-A connection) dock, DAC, headset, or other audio device may suffer from suddenly having no audio.  This can be, but is not always related to sleep/suspend. 
 
 Several symptoms that are fixed with this method include:
 
