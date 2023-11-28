@@ -1,26 +1,66 @@
-#! /bin/zsh
+#! /bin/bash
 
-# Optionally, #! /bin/bash if you prefer.  
-# Should be funcionally the same
+#HELP00:           Script Name:  rsaudio
+#HELP01:               Purpose:  reset coreaudio service & optionally Google Chrome
+#HELP02:                 Owner:  David Eisenhardt
+#HELP03:               License:  GPL v3
+#HELP04:               Created:  2018 August
+#HELP05:              Category:  peripherals
+#HELP06:            Input File:  stdin
+#HELP07:           Output File:  stdout
+#HELP08:              Log path:  na
+#HELP09:                Syntax:  sudo rsaudio
+#HELP10:               Example:  sudo rsaudio -c
+#HELP11:              Commands:  killall, open (finder)
+#HELP12:      Production Files:  na
+#HELP13:    Ancillary Programs:  finder, Google Chrome
+#HELP14:     Ancillary Scripts:  na
+#HELP15:         Local Scripts:  no dependencies
+#HELP16: crontask/systemd srvc:  na
+#HELP17: task/service schedule:  na
+#HELP18:        Kernel Version:  Darwin >19.0
+#HELP19:            DB Version:  na
+#HELP20:            Audit Date:  
+#HELP21:               Auditor:
+#HELP22:       Approve Date(s):
+#HELP23:           Approver(s):
+#HELP24: Date Checked Into CVS:
+#HELP25:   Checked Into CVS By:
+#HELP26:               Version:  1.2
+#HELP27:               Changes:  formatting
+#HELP28:            Github url:  https://github.com/deisenhardt/rsaudio/
+#HELP29:
+#HELP30:
 
-# (C) David Eisenhardt  GPL v2.0
-# https://github.com/deisenhardt/rsaudio/
+##############################################################
+# Version history ############################################
+##############################################################
 
-#{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}
-# functions  {}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}
-#{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}
+# 1   initial design, required sudo
+# 1.1 add option to kill chrome, revised sudo requirements
+# 1.2 formatting
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# Exit codes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+# 3 help/usage
+
+#{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}
+# Define functions {}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}
+#{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}
 
 usage(){
-    printf "\n\tThe purpose of this script is to address power/sleep/suspend related audio issues in MacOS Monterey \
-            \n\n Usage: rsaudio [-c|a] \
-            \n\t -c: restart only Google Chrome \
-            \n\t -a: restart only coreaudiod \
-            \n No argument: restart coreaudiod \
-            \n then prompt to restart Google Chrome \
-            \n Please expect to be prompted for elevated permission \
-            \n HOWEVER please do not run the script as su/sudo/root as \
-            \n this will result in running apps & services with elevated priveleges \
-            \n\n\t ## This project is functional, but still WIP ## \n\n"
+  printf "\n\tThe purpose of this script is to address power/sleep/suspend related audio issues in MacOS Monterey \
+          \n\n Usage: rsaudio [-c|a] \
+          \n\t -c: restart only Google Chrome \
+          \n\t -a: restart only coreaudiod \
+          \n No argument: restart coreaudiod \
+          \n then prompt to restart Google Chrome \
+          \n Please expect to be prompted for elevated permission \
+          \n HOWEVER please do not run the script as su/sudo/root as \
+          \n this will result in running apps & services with elevated priveleges \
+          \n\n\t ## This project is functional, but still WIP ## \n\n"
 }
 
 sudo_check() {
@@ -33,43 +73,41 @@ sudo_check() {
 }
 
 restart_audio(){
-    printf "Kill coreaudiod \n"
-    sudo killall coreaudiod
-    printf "done \n"
+  printf "Kill coreaudiod \n"
+  sudo killall coreaudiod
+  printf "done \n"
 }
 
 restart_chrome(){
-    printf "\nKill Google Chrome \n"
-    #sudo killall Google\ Chrome
-    sudo killall "Google Chrome"
-    sleep 2
-    printf "done \n"
+  printf "\nKill Google Chrome \n"
+  #sudo killall Google\ Chrome
+  sudo killall "Google Chrome"
+  sleep 2
+  printf "done \n"
 
+  # sudo is not needed to open Chrome, and we do not want to 
+  # be running Chrome with elevation so we will instead
+  # sudo the commands that need elevation only within the script
 
-    # sudo is not needed to open Chrome, and we do not want to 
-    # be running Chrome with elevation so we will instead
-    # sudo the commands that need elevation only within the script
-
-    printf "\nRestart Google Chrome \n"
-    #open -a Google\ Chrome
-    open -a "Google Chrome"
-    printf "done \n"
+  printf "\nRestart Google Chrome \n"
+  #open -a Google\ Chrome
+  open -a "Google Chrome"
+  printf "done \n"
 }
 
 no_flags(){
-    restart_audio
-    printf "Restart Google Chrome? "
-        read ChRestart
-        case $ChRestart in
-            [yY]*) restart_chrome ;;
-            *    ) exit 0 ;;
-        esac
+  restart_audio
+  printf "Restart Google Chrome? "
+    read ChRestart
+  case $ChRestart in
+    [yY]*) restart_chrome ;;
+    *    ) exit 0 ;;
+  esac
 }
 
-
-###########################################################################
-# main ####################################################################
-###########################################################################
+##############################################################
+# main program ###############################################
+##############################################################
 
 #sudo_check
 
@@ -86,3 +124,7 @@ fi
 
 printf "\n"
 exit 0
+
+##############################################################
+# End ########################################################
+##############################################################
